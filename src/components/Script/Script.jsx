@@ -1,4 +1,5 @@
 import { Field, useForm } from 'react-final-form';
+import { Link } from 'react-router-dom';
 import { isRequired } from '../../validate/validate';
 
 const Script = (props) => {
@@ -37,39 +38,43 @@ const Script = (props) => {
 
         </svg>;
     const data = [
-        {id: 1, name: 'По специалистам', logo: user, callback: () => {}},
-        {id: 2, name: 'По услугам', logo: scissors, callback: () => {}}
+        {id: 1, link: '/specialist', name: 'По специалистам', logo: user, callback: () => {}},
+        {id: 2, link: '/service', name: 'По услугам', logo: scissors, callback: () => {}}
     ];
     const [state, dispatch] = props.commonState;
-     
+    // const form = useForm();
     return (
         <>
             <h2 className="bit_title bit_title_second">Выберите сценарий записи</h2>
             <section className="bit_script">
-                <Field name="script" validate={isRequired('Необходимо выбрать сценарий')}>
+                {/* <Field name="script" validate={isRequired('Необходимо выбрать сценарий')}>
                     {fieldProps => (
-                        <>
+                        <> */}
                             <div className="bit_script__list">
                                 {data.map(item => (
-                                    <div 
-                                        className={fieldProps.input.value === item.id 
+                                    <Link
+                                        to={'/open' + item.link}
+                                        className={state.script === item.id 
                                             ? "bit_script__item bit_script__item_active"
                                             : "bit_script__item bit_shadow"} 
                                         key={item.id} 
                                         onClick={() => {
-                                            fieldProps.input.onChange(item.id);
+                                            props.valuesCallback({script: item.id})
+                                            // form.restart();
                                             dispatch({type: 'CHANGE_SCRIPT', script: item.id});
+                                            dispatch({type: 'SET_DOCTOR', id: null});
+                                            // console.log(form.getState().values)
                                         }}>
                                         {item.logo}
                                         <h3 className="bit_title bit_title_text">{item.name}</h3>                    
-                                    </div>  
+                                    </Link>  
                                 ))}
                             </div>
-                            {fieldProps.meta && fieldProps.meta.error && fieldProps.meta.touched 
+                             {/*{fieldProps.meta && fieldProps.meta.error && fieldProps.meta.touched 
                                 && <p className="bit_error">{fieldProps.meta.error}</p>}
                         </>
                     )}
-                </Field>
+                </Field> */}
             </section>
         </>
     )

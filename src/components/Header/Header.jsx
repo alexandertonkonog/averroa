@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../images/close.svg';
 import Select from '../Select/Select';
 
-const Header = ({ state }) => {
+const Header = ({ state, select }) => {
     const [{sex}, dispatch] = state;
     const chooseSex = (id) => {
         dispatch({type: 'CHANGE_SEX', sex: id});
@@ -13,12 +13,15 @@ const Header = ({ state }) => {
                 <h1 className="bit_title bit_title_main bit_header__title">
                     Запись на прием к специалисту
                 </h1>
-                <Select 
-                    addClass="bit_header__select" 
-                    callback={chooseSex} 
-                    value={sex} 
-                    state={state} 
-                    title="Выберите пол" />
+                {select 
+                    ? <Select 
+                        addClass="bit_header__select" 
+                        callback={chooseSex} 
+                        value={sex} 
+                        state={state} 
+                        title="Выберите пол" />
+                    : <div></div>
+                }
                 <Link className="bit_header__exit" to="/">
                     <img src={logo} alt="Закрыть окно" title="Закрыть окно" className="bit_header__exit-logo" />
                 </Link>

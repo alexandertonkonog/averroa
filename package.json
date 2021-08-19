@@ -50,6 +50,7 @@
   "dependencies": {
     "final-form": "^4.20.2",
     "history": "^4.10.1",
+    "imask": "^6.1.0",
     "preact-compat": "^3.19.0",
     "react-final-form": "^6.5.3",
     "react-router-dom": "^5.2.0"

@@ -35,8 +35,8 @@ const Select = (props) => {
 
 Select.defaultProps = {
     data: [
-        {id: 1, name: 'Мужчина'},
-        {id: 2, name: 'Женщина'},
+        {id: 'male', name: 'Мужчина'},
+        {id: 'female', name: 'Женщина'},
     ]
 }
 
