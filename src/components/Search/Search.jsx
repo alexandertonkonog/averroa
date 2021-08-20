@@ -2,30 +2,29 @@ import { useState, useEffect } from 'preact/hooks';
 import { ServiceFormatter } from '../../utils/utils'
 import logo from '../../images/search.svg';
 import exit from '../../images/close.svg';
+import { useHistory } from 'react-router-dom';
 
 const Search = (props) => {
     let [s, setS] = useState('');
+
+    const [state, dispatch] = props.commonState;
+    const history = useHistory();
+
+    const serviceFormatter = ServiceFormatter.getInstance();
+    const servicesArray = serviceFormatter.getServicesByName(s, state);
     
     const callback = (e) => {
         const val = e.target.value;
         setS(val);
     }
-
+        
     const searchClickCallback = (elem) => {
-        const elements = props.callback(elem);
+        dispatch({type: 'SET_BLOCK', payload: elem.id});
+        history.push('/open/' + elem.id);
         setS('');
-        elements.forEach((item, index) => {
-            props.form.change('block' + index, item.id);
-            if (!item.isDirectory) {
-                props.form.change('service_id', item.id);
-            }
-        })
     }
 
-    const serviceFormatter = ServiceFormatter.getInstance();
-    const servicesArray = serviceFormatter.getServicesByName(s);
-
-return (
+    return (
         <div className="bit_search-container">
             <div className="bit_search__header">
                 <input 

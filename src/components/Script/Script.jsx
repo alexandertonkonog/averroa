@@ -1,8 +1,8 @@
-import { Field, useForm } from 'react-final-form';
+import { useEffect } from 'preact/hooks';
 import { Link } from 'react-router-dom';
-import { isRequired } from '../../validate/validate';
 
 const Script = (props) => {
+
     const user = <svg version="1.1" className="bit_script__logo bit_script__logo_user" xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 349.667 349.667" style="enable-background:new 0 0 349.667 349.667;" >
     <g>
@@ -37,44 +37,34 @@ const Script = (props) => {
         </g>
 
         </svg>;
+    
     const data = [
-        {id: 1, link: '/specialist', name: 'По специалистам', logo: user, callback: () => {}},
-        {id: 2, link: '/service', name: 'По услугам', logo: scissors, callback: () => {}}
+        {id: 1, link: '/specialists', name: 'По специалистам', logo: user, callback: () => {}},
+        {id: 2, link: '/services', name: 'По услугам', logo: scissors, callback: () => {}}
     ];
     const [state, dispatch] = props.commonState;
-    // const form = useForm();
+
     return (
         <>
             <h2 className="bit_title bit_title_second">Выберите сценарий записи</h2>
             <section className="bit_script">
-                {/* <Field name="script" validate={isRequired('Необходимо выбрать сценарий')}>
-                    {fieldProps => (
-                        <> */}
-                            <div className="bit_script__list">
-                                {data.map(item => (
-                                    <Link
-                                        to={'/open' + item.link}
-                                        className={state.script === item.id 
-                                            ? "bit_script__item bit_script__item_active"
-                                            : "bit_script__item bit_shadow"} 
-                                        key={item.id} 
-                                        onClick={() => {
-                                            props.valuesCallback({script: item.id})
-                                            // form.restart();
-                                            dispatch({type: 'CHANGE_SCRIPT', script: item.id});
-                                            dispatch({type: 'SET_DOCTOR', id: null});
-                                            // console.log(form.getState().values)
-                                        }}>
-                                        {item.logo}
-                                        <h3 className="bit_title bit_title_text">{item.name}</h3>                    
-                                    </Link>  
-                                ))}
-                            </div>
-                             {/*{fieldProps.meta && fieldProps.meta.error && fieldProps.meta.touched 
-                                && <p className="bit_error">{fieldProps.meta.error}</p>}
-                        </>
-                    )}
-                </Field> */}
+                <div className="bit_script__list">
+                    {data.map(item => (
+                        <Link
+                            to={'/open' + item.link}
+                            className={state.script === item.id 
+                                ? "bit_script__item bit_script__item_active"
+                                : "bit_script__item bit_shadow"} 
+                            key={item.id} 
+                            onClick={() => {
+                                dispatch({type: 'CHANGE_SCRIPT', script: item.id});
+                                dispatch({type: 'SET_DOCTOR', id: null});
+                            }}>
+                            {item.logo}
+                            <h3 className="bit_title bit_title_text">{item.name}</h3>                    
+                        </Link>  
+                    ))}
+                </div>
             </section>
         </>
     )

@@ -1,20 +1,20 @@
-import { Field, useForm } from 'react-final-form';
-import { isRequired } from '../../validate/validate';
-import { DateFormatter } from '../../utils/utils';
+import { Link, Redirect, useLocation } from 'react-router-dom';
+import BlockBack from '../Block/BlockBack';
 
 const Specialist = (props) => {
 
     let [state, dispatch] = props.commonState;
 
-    let doctors = state.data.doctors;
-    const form = useForm();
-    const formState = form.getState().values;
-
-    const service = formState.service;
-
+    let doctors = state.doctors;
+    
+    const location = useLocation();
+    const service = state.service;
     if (service) {
         doctors = doctors.filter(item => item.services.includes(service.id));
     }
+
+    doctors = [{id: 0, name: 'Назад', back: true, link}, ...doctors];
+
     const user = <svg version="1.1" className="bit_list__item-img" xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 349.667 349.667" style="enable-background:new 0 0 349.667 349.667;" >
     <g>
@@ -32,22 +32,30 @@ const Specialist = (props) => {
     </g>
 
     </svg>;
+    const link = state.script === 1 ? '/open/specialists/services' : location.pathname + '/date';
+    
+    if (state.script === 2 && !state.service) {
+        return <Redirect to="/open" />
+    }
+
     return (
         <>
             <h2 className="bit_title bit_title_second">Выберите специалиста</h2>
             <section className="bit_block bit_block_specialist bit_specialist">
-                <Field name="doctor" validate={isRequired('Необходимо выбрать специалиста')}>
-                    {fieldProps => (
-                        <div>
-                            <ul className="bit_list bit_shadow">
-                                {doctors.map(item => (
+                <div>
+                    <ul className="bit_list bit_shadow">
+                        {doctors.map(item => {
+                            if (item.back) {
+                                return <BlockBack state={state} key={item.id} item={item} />
+                            }
+                            return (
+                                <Link to={link}>
                                     <li 
                                         key={item.id} 
                                         onClick={() => {
-                                            fieldProps.input.onChange(item);
                                             dispatch({type: 'SET_DOCTOR', id: item});
                                         }}
-                                        className={item.id === fieldProps.input.value.id 
+                                        className={state.doctor && state.doctor.id === item.id
                                             ? "bit_list__item bit_list__item_active"
                                             : "bit_list__item"}>
                                             <p className="bit_list__item_spec">
@@ -62,13 +70,11 @@ const Specialist = (props) => {
                                                 {item.name}
                                             </p>
                                     </li>
-                                ))}
-                            </ul>
-                            {fieldProps.meta.touched && fieldProps.meta.error 
-                                && <p className="bit_error">{fieldProps.meta.error}</p>}
-                        </div>
-                    )}
-                </Field>
+                                </Link>
+                            )
+                        })}
+                    </ul>
+                </div>
             </section>
         </>
     )

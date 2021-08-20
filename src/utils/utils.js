@@ -1,9 +1,6 @@
 export class ServiceFormatter {
     constructor(state) {
         this.root = '00000000-0000-0000-0000-000000000000';
-        this.services = this.getAllServices(state.data.services);
-        this.doctors = state.data.doctors;
-        this.tree = [];
     }
 
     static getInstance(state = {}) {
@@ -15,64 +12,100 @@ export class ServiceFormatter {
         }
     }
 
-    createTree(services = this.services, root = this.root, container = this.tree) {
-        for (let i = 0; i < services.length; i++) {
-            const item = services[i];
-            if (item.parent === root) {
-                container.push(item);
-                if (item.isDirectory) {
-                    item.children = [];
-                    this.createTree(services, item.id, item.children);
+    getBread(location, state) {
+        const dict = {
+            open: 'Выбор сценария',
+            specialists: 'Выбор специалиста',
+            services: 'Выбор группы',
+            date: 'Выбор времени',
+            personal: 'Личные данные'
+        };
+        const pathname = location.pathname;
+        const elems = pathname.split('/').slice(1);
+        const resultElems = [];
+        elems.forEach(item => {
+            if (item in dict) {
+                resultElems.push(item);
+            } else {
+                if (state.services) {
+                    const services = this.getServiceChain(item, state);
+                    if (services) resultElems.push(...services);
                 }
             }
-        }       
+        })
+        return resultElems.map(item => {
+            const elem = {link: this.getFullLinkByName(item, location.pathname)};
+            
+            if (item in dict) {
+                elem.name = dict[item];
+            } else if (typeof item === 'object') {
+                elem.name = item.name;
+            } else {
+                elem.name = 'Не найден'
+            }
+            return elem;
+        })
     }
 
-    getTree(options = null) {
-        this.tree = [];
-        this.filterTree(options);
-        return this.tree;
-    }
-
-    filterTree(options) {
-        let doctor, services = this.services;
-        if (options.doctor) {
-            doctor = options.doctor;
-            services = this.services.filter(item => !item.idDirectory && doctor.services.includes(item.id));
-        } 
-        if (options.sex) {
-            services = this.services.filter(item => item.sex === options.sex);
-        }
-        if (services.length !== this.services.length) {
-            this.filterArray = this.services.filter(item => item.isDirectory);
-            this.filterArray.push(...services);
-            this.tree = [];
-            this.createTree(this.filterArray);
-            this.clearEmptyBranches(this.tree);
-            this.tree = this.tree.filter(item => item && item.children.length)
-        } else {
-            this.filterArray = services;
-            this.createTree(this.filterArray);
-        }        
-    }
-
-    clearEmptyBranches(items) {
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            if (item.isDirectory) {
-                if (!item.children.length) {
-                    delete items[i];
+    getServiceChain(id, state) {
+        const service = state.services.find(item => item.id === id);
+        if (service) {
+            if (service.parent === this.root) {
+                return [{name: service.name, link: id}];
+            } else {
+                const services = this.getServiceChain(service.parent, state);
+                if (services) {
+                    return [...services, {name: service.name, link: id}]
                 } else {
-                    this.clearEmptyBranches(item.children)
-                }
-                if (items[i]) {
-                    items[i].children = items[i].children.filter(elem => elem);
+                    return [{name: service.name, link: id}];
                 }
             }
         }
+        return null;
     }
 
-    getAllServices(services, id = this.root) {
+    getFullLinkByName(link, pathname) {
+
+        const locLink = typeof link === 'object' ? link.link : link;
+        const index = pathname.indexOf(locLink);
+        if (index === -1) {
+            const arr = pathname.split('/');
+            arr[arr.length - 1] = locLink;
+            return arr.join('/');
+        }
+        return pathname.slice(0, index + locLink.length)
+    }
+
+    getServicesByName(text, state) {
+        if (text && text.length > 2) {
+            const lowerText = text.toLowerCase();
+            const services = state.services.filter(item => {
+                const name = item.name.toLowerCase();
+                return name.includes(lowerText);
+            });
+            return services.slice(0, 10);
+        } 
+    }
+
+    getSearchLink(id, state) {
+        const service = state.services.find(item => item.id === id);
+        if (service) {
+            if (service.parent === this.root) {
+                return '/open/services';
+            } else {
+                const parent = state.services.find(item => item.id === service.parent);
+                if (parent) {
+                    return '/open/services/' + parent.id;
+                } else {
+                    return '/open/services';
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
+    getAllServices(services, id = '00000000-0000-0000-0000-000000000000') {
         const root = services.find(item => item.parent === id);
         const filteredServices = services.filter(item => item.id !== root.id);
         const rootServices = services.filter(item => item.parent === root.id);
@@ -84,38 +117,53 @@ export class ServiceFormatter {
         }
     }
 
-    getServicesByName(text) {
-        if (text && text.length > 2) {
-            const lowerText = text.toLowerCase();
-            const services = this.services.filter(item => {
-                const name = item.name.toLowerCase();
-                return name.includes(lowerText);
-            });
-            return services.slice(0, 10);
+    filterServices(state) {
+        let changed = false;
+        this.serviceLevels = [state.services];
+        if (state.doctor) {
+            changed = true;
+            this.serviceLevels[0] = state.doctor.services.map(item => state.services.find(elem => elem.id === item)).filter(item => item);
+        }
+        if (state.sex) {
+            changed = true;
+            this.serviceLevels[0] = this.serviceLevels[0].filter(item => item.sex === state.sex);
+        }
+        if (changed && this.serviceLevels[0].length) {
+            this.getParents(state);
+        }
+        return this.serviceLevels.flat();
+    }
+
+    getParents(state) {
+        const next = this.serviceLevels.length;
+        const current = next - 1;
+        const isHighLevel = this.serviceLevels[current].every(item => item.parent === this.root);
+        if (!isHighLevel) {
+            this.serviceLevels[next] = [];
+            this.serviceLevels[current].forEach(item => {
+                const parent = state.services.find(elem => elem.id === item.parent);
+                if (parent) {
+                    const cond = !this.serviceLevels[next].some(elem => elem.id === parent.id);
+                    if (cond) {
+                        this.serviceLevels[next].push(parent);
+                    }
+                }
+            })
+            this.getParents(state);
         } 
     }
 
-    getPagesById(elem) {
-        this.filterArray = this.services;      
-        const parents = this.getParents(elem);
-        const elements = [...parents, elem];
-        const pages = [this.tree];
-        elements.forEach(item => {
-            if (item.isDirectory) {
-                pages.push(item.children);
-            }
-        })
-        pages[pages.length - 1] = pages[pages.length - 1].sort(item => item.id === elem.id ? -1 : 0);
-        return [elements, pages];
-    }
-
-    getParents(elem) {
-        if (elem.parent === this.root) {
-            return [];
+    getStageServices(params, state) {
+        let services = this.filterServices(state);
+        if (params && params.id) {
+            services = services.filter(item => item.parent === params.id);
         } else {
-            const parent = this.services.find(item => item.id === elem.parent);
-            return [...this.getParents(parent), parent];
+            services = services.filter(item => item.parent === this.root);
         }
+        if (state.activeBlock) {
+            services = services.sort((a, b) => a.id === state.activeBlock ? -1 : 0);
+        }
+        return services;
     }
 }
 
@@ -200,15 +248,17 @@ export class DateFormatter {
         return day;
     }
 
-    static getTimeElements(date, doctor, formState) {
+    static getTimeElements(date, doctor, state) {
         const result = [];
         const localDate = new Date(date);
-        const doctorForm = formState.doctor;
-        const service = formState.service;
+        const service = state.service || state.services.find(item => !item.isDirectory);
         const interval = doctor.time.find(item => {
             const intDate = new Date(item.time_start);
             return intDate.getMonth() === localDate.getMonth() && intDate.getDate() === localDate.getDate();
         });
+
+        if (!service.duration || !interval) return null;
+
         const durationDate = new Date(service.duration);
         const duration = DateFormatter.getMinutes(durationDate);
         const start = new Date(interval.time_start);

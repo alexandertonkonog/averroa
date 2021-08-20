@@ -1,5 +1,5 @@
 import { Field } from "react-final-form";
-import { useRef } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import IMask from "imask";
 
 const NumberInput = (props) => {
@@ -8,8 +8,14 @@ const NumberInput = (props) => {
     const maskOptions = {
         mask: '+{7}(000)000-00-00'
     };
-    const mask = inputRef.current && IMask(inputRef.current, maskOptions);
-    
+    let mask = inputRef.current && IMask(inputRef.current, maskOptions);
+
+    useEffect(() => {
+        if (!mask) {
+            mask = IMask(inputRef.current, maskOptions)
+        } 
+    }, [mask])
+
     return (
         <Field name={props.name} validate={props.validate}>
             {({input, meta}) => (
@@ -28,7 +34,7 @@ const NumberInput = (props) => {
                         placeholder={props.placeholder}
                         onFocus={input.onFocus}
                         onBlur={(e) => {
-                            const val = mask && mask.unmaskedValue;
+                            const val = mask?.unmaskedValue;
                             input.onChange(val);
                             input.onBlur(e);
                         }}

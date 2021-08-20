@@ -7,41 +7,41 @@ import Personal from "../Personal/Personal";
 import Confirm from "../Confirm/Confirm";
 import Wizard from "../Main/Wizard";
 
-const SpecialistScript =  (props) => {
+const ServiceScript =  (props) => {
 
     const [state, dispatch] = props.commonState;
 
     useEffect(() => {
-        dispatch({type: 'CHANGE_SCRIPT', script: 1})
+        dispatch({type: 'CHANGE_SCRIPT', script: 2})
     }, [])
 
     return (
         <Switch>
-            <Route path="/open/specialists/services/:id/date/personal/confirm" >
+            <Route path="/open/services/:id/specialists/date/personal/confirm" >
                 <Confirm commonState={props.commonState} />
             </Route>
-            <Route path="/open/specialists/services/:id/date/personal" >
+            <Route path="/open/services/:id/specialists/date/personal" >
                 <Wizard commonState={props.commonState}>
                     <Personal commonState={props.commonState} />
                     <Confirm commonState={props.commonState} />
                 </Wizard>
             </Route>
-            <Route path="/open/specialists/services/:id/date" >
+            <Route path="/open/services/:id/specialists/date" >
                 <DateTime commonState={props.commonState} />
             </Route>
-            <Route path="/open/specialists/services/:id?" >
-                <Block
-                    commonState={props.commonState} />
-            </Route>
-            <Route path="/open/specialists/services" >
-                <Block
-                    commonState={props.commonState} />
-            </Route>
-            <Route path="/open/specialists" exact>
+            <Route path="/open/services/:id/specialists" >
                 <Specialist commonState={props.commonState} />
+            </Route>
+            <Route path="/open/services/:id?" >
+                <Block
+                    commonState={props.commonState} />
+            </Route>
+            <Route path="/open/services" exact>
+                <Block
+                    commonState={props.commonState} />
             </Route>
         </Switch>
     )
 }
 
-export default SpecialistScript;
+export default ServiceScript;

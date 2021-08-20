@@ -1,5 +1,7 @@
+import { ServiceFormatter } from "../utils/utils";
+
 const DATA_URL = 'http://wp.loc/wp-json/1bit/data';
-const SCHEDULE_URL = 'http://test.loc/data.php';
+const SCHEDULE_URL = '/api/schedule.json';
 const APPOINTMENT_URL = '/api/appointment';
 let SMS_URL = '/api/sms';
 
@@ -19,6 +21,7 @@ const createCode = () => {
 
 export const getData = async (stateRes) => {
     const [state, dispatch] = stateRes;
+    const serviceFormatter = ServiceFormatter.getInstance();
     try {
         const response = await fetch(DATA_URL, {
             headers: {
@@ -26,6 +29,8 @@ export const getData = async (stateRes) => {
             }
         });
         const data = await response.json();
+        const services = serviceFormatter.getAllServices(data.services)
+        data.services = services;
         dispatch({type: 'GET_DATA', data}); 
     } catch(e) {
         console.log(e)
@@ -36,8 +41,8 @@ export const sendCode = async (stateRes) => {
     const [_, dispatch] = stateRes;
     const code = createCode();
     try {
-        const response = await fetch(SMS_URL, {
-            method: 'POST',
+        const response = await fetch(`${SMS_URL}?`, {
+            method: 'GET',
         });
         const data = await response.json();
         dispatch({type: 'SET_CODE', code});
@@ -51,14 +56,15 @@ export const getSchedule = async (stateRes) => {
     const [_, dispatch] = stateRes;
     try {
         const response = await fetch(SCHEDULE_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                method: 'shcedule',
-                data: []
-            })
+            // method: 'POST',
+            method: 'GET',
+            // body: JSON.stringify({
+            //     method: 'schedule',
+            //     data: []
+            // })
         });
         const data = await response.json();
-        dispatch({type: 'SET_SCHEDULE', data});
+        dispatch({type: 'SET_SCHEDULE', data: data.schedule});
     } catch (e) {
         console.log(e)
     }

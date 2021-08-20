@@ -4,7 +4,7 @@ import NumberInput from "../Input/Number";
 import Checkbox from "../Input/Checkbox";
 import user from '../../images/user.svg';
 import { DateFormatter } from "../../utils/utils";
-import { useFormState } from "react-final-form";
+import { Redirect } from "react-router-dom";
 
 const Personal = (props) => {
     const [state, dispatch] = props.commonState;
@@ -12,12 +12,18 @@ const Personal = (props) => {
         {id: 1, name: 'name', label: 'Введите имя', validate: isLength(2, 30, 'имя'), placeholder: 'Ваше имя'},
         {id: 2, name: 'surname', label: 'Введите фамилию', validate: isLength(3, 30, 'фамилия'), placeholder: 'Ваша фамилия'},
     ]
-    const form = useFormState().values;
-    const { service, doctor, date, time } = form;
-    const stdDate = DateFormatter.getStandardDate(new Date(date));
-    const stdTime = DateFormatter.getStandardTime(new Date(time));
+    
+    const { service, doctor, dateTime } = state;
+
+    if (!service || !doctor || !dateTime) {
+        return <Redirect to="/open" />;
+    }
+
+    const stdDate = DateFormatter.getStandardDate(new Date(dateTime));
+    const stdTime = DateFormatter.getStandardTime(new Date(dateTime));
     const duration = DateFormatter.getMinutes(new Date(service.duration));
     const img = (doctor && doctor.img) || user;
+
     return (
         <>
             <h2 className="bit_title bit_title_second">Введите личные данные</h2>
