@@ -23,7 +23,6 @@ const BlockService = ({item, callback, link, state}) => {
                             </span>
                         </p>
                     </div>
-                    <p className="bit_list__item-des">Услуга</p>
             </li>
         </Link>
     );  

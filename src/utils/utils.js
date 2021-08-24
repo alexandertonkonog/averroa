@@ -266,9 +266,10 @@ export class DateFormatter {
         while(start < end) {
             const obj = {
                 date: start.getTime(),
-                visible: DateFormatter.getStandardTime(start)
+                start: DateFormatter.getStandardTime(start),
             }
             start.setMinutes(start.getMinutes() + duration);
+            obj.end = DateFormatter.getStandardTime(start);
             result.push(obj);
         }
         return result;

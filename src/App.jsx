@@ -29,12 +29,32 @@ const App = (props) => {
                     ...state,
                     isDataLoaded: true,
                     services: action.data.services,
-                    doctors: action.data.doctors
+                    doctors: action.data.doctors,
+                    schedule: action.data.schedule
+                }
+            case 'SET_FINAL_STATE':
+                return {
+                    ...state,
+                    resultState: {
+                        doctor: state.doctor,
+                        service: state.service,
+                        dateTime: state.dateTime,
+                        ...action.payload
+                    },
+                    doctor: null,
+                    service: null,
+                    dateTime: null,
+                    date: null,
                 }
             case 'SET_DOCTOR':
                 return {
                     ...state,
                     doctor: action.id
+                }
+            case 'SET_ERROR':
+                return {
+                    ...state,
+                    error: action.payload
                 }
             case 'SET_DATE':
                 return {
@@ -45,11 +65,6 @@ const App = (props) => {
                 return {
                     ...state,
                     dateTime: action.payload
-                }
-            case 'SET_SCHEDULE':
-                return {
-                    ...state,
-                    schedule: action.data
                 }
             case 'SET_CODE':
                 return {
@@ -82,24 +97,6 @@ const App = (props) => {
                     ...state,
                     activeBlock: action.payload
                 }
-            case 'SET_NOT_SERVICE':
-                return {
-                    ...state,
-                    notService: action.data
-                }
-            case 'CLEAR_STORE':
-                return {
-                    ...state,
-                    data: state.data,
-                    formData: state.formData,
-                    final: state.final
-                }
-            case 'SET_FORM_DATA':
-                return {
-                    ...state,
-                    formData: action.data,
-                    final: true
-                }
             default:
                 return state;
         }
@@ -121,7 +118,7 @@ const App = (props) => {
 
     return (
         <HashRouter hashType="noslash" basename="/">
-            <Route path="/open/:id?">
+            <Route path="/open">
                 <Wrapper resReducer={resReducer} /> 
             </Route>
             <Route path="/" exact>

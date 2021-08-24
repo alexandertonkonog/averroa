@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks';
-import { getData, getSchedule } from '../../api/api';
+import { getData, sendData } from '../../api/api';
 import { useHistory, Switch, Route, useLocation } from 'react-router-dom';
 import Header from '../Header/Header';
 import loader from '../../images/load.gif';
@@ -17,14 +17,21 @@ const Wrapper = (props) => {
     const history = useHistory();
     const location = useLocation();
 
-    const getBody = (values) => {
-        return {
-            service_id: values.service.id,
-            doctor_id: values.doctor.id,
-            dateTime: values.dateTime,
+    const onSubmit = async (values) => {
+        const payload = {
+            name: values.name.trim(),
+            surname: values.surname.trim(),
             number: values.number,
-            name: values.name,
-            surname: values.surname,
+            service_id: state.service.id,
+            doctor_id: state.doctor.id,
+            dateTime: state.dateTime
+        }
+        const result = await sendData(props.resReducer, payload);
+        if (result) {
+            dispatch({type: 'SET_FINAL_STATE', payload: values});
+            history.push('/open/result/success');
+        } else {
+            history.push('/open/result/error');
         }
     }
 
@@ -39,13 +46,23 @@ const Wrapper = (props) => {
         }
     }, [state.isDataLoaded]);
 
-    useEffect(() => {
+    const loadData = async () => {
         if (!state.isDataLoaded) {
-            getData(props.resReducer);
+            const result = await getData(props.resReducer);
+            if (!result) {
+                history.push('/open/result/error');
+            }
         }
-        if (!state.schedule) {
-            getSchedule(props.resReducer);
-        }
+        // if (!state.schedule) {
+        //     const result = await getSchedule(props.resReducer);
+        //     if (!result) {
+        //         history.push('/open/result/error');
+        //     }
+        // }
+    }
+ 
+    useEffect(() => {
+        loadData();
     }, []);
 
     return (
@@ -53,20 +70,20 @@ const Wrapper = (props) => {
             <div className="bit_container">
                 <Header select={true} state={props.resReducer} />   
                 <Bread commonState={props.resReducer} />
-                {state.isDataLoaded && state.schedule
+                {state.isDataLoaded
                     ?   ( 
                             <Switch>
                                 <Route path="/open" exact>
                                     <Script commonState={props.resReducer} />
                                 </Route>
                                 <Route path="/open/specialists">
-                                    <SpecialistScript name="specialist" commonState={props.resReducer} />
+                                    <SpecialistScript onSubmit={onSubmit} name="specialist" commonState={props.resReducer} />
                                 </Route>
                                 <Route path="/open/services">
-                                    <ServiceScript commonState={props.resReducer} />
+                                    <ServiceScript onSubmit={onSubmit} commonState={props.resReducer} />
                                 </Route>
                                 <Route path="/open/result/:result">
-                                    <Result />
+                                    <Result commonState={props.resReducer} />
                                 </Route>
                                 <Route path="/open/:id">
                                     <RedirectBlock commonState={props.resReducer} />

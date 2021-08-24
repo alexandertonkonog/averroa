@@ -118,6 +118,10 @@ html, body {
 	background-color: #CDA379;
 	border: 1px solid #CDA379;
 }
+.bit_btn .bit_loader {
+	margin: 0 auto;
+	width: 30px;
+}
 
 /* loader */
 
@@ -265,7 +269,26 @@ html, body {
 	color: #000;
 	text-decoration: none;
 }
+.bit_list .bit_list__item {
+	width: 100%;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
+.bit_list__item_back {
+	justify-content: flex-start;
+	width: 100px;
+	margin-top: 20px;
+}
 
+.bit_list__arrow {
+	width: 20px;
+	transform: rotate(-90deg);
+}
+.bit_list__item_back .bit_list__arrow {
+	transform: rotate(90deg);
+	margin-right: 10px;
+	vertical-align: middle;
+}
 
 /* widget */
 
@@ -342,6 +365,7 @@ html, body {
 	font-weight: 400;
 	color: #000;
 }
+
 
 /* toggler */
 
@@ -589,9 +613,11 @@ html, body {
 
 .bit_time {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 	grid-gap: 10px;
 	margin-top: 20px;
+	max-height: 40vh;
+	overflow-y: auto;
 }
 .bit_time__item {
 	padding: 5px 10px;
@@ -634,6 +660,16 @@ html, body {
 
 .bit_block_confirm {
 	grid-template-columns: 1fr 1fr;
+}
+
+/* result */
+
+.bit_result .bit_title {
+	margin-bottom: 30px;
+}
+.bit_result .bit_text {
+	margin-bottom: 50px;
+	color: grey;
 }
 
 @media (max-width: 1440px) {
@@ -704,6 +740,19 @@ html, body {
 		margin-top: 20px;
 		width: 100%;
 	}
+
+	/* calendar */
+	.bit_block__calendar-item {
+		margin-bottom: 20px;
+	}
+
+	/* bread */
+	.bit_bread__item {
+		display: none;
+	}
+	.bit_bread__item:nth-last-of-type(-n+1) {
+		display: inline;
+	}
 }
 
 @media (max-width: 450px) {
@@ -773,6 +822,14 @@ html, body {
 	}
 	.bit_specialist__more {
 		border: 1px solid #BECCD2;
+	}
+
+	/* calendar */
+	.bit_block__calendar-item {
+		padding: 0;
+	}
+	.bit_time {
+		grid-template-columns: 1fr 1fr;
 	}
 }
 

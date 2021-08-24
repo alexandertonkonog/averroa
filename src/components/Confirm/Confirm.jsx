@@ -1,17 +1,25 @@
 import { useEffect } from "preact/hooks";
+import { useHistory } from "react-router-dom";
 import { sendCode } from "../../api/api";
 import { isEqual } from "../../validate/validate";
 import Input from "../Input/Input";
 
 const Confirm = (props) => {
     const [state, dispatch] = props.commonState;
+    const history = useHistory();
     const fields = [
         {id: 1, name: 'code', label: 'Введите код из смс', validate: isEqual(state.code, 'Неправильный код'), placeholder: 'Ваше код'},
     ];
-    useEffect(() => {
+    const sendSMS = async () => {
         if (!state.code) {
-            sendCode(props.commonState);
+            const result = await sendCode(props.commonState);
+            if (!result) {
+                history.push('/open/result/error');
+            }
         }
+    }
+    useEffect(() => {
+        sendSMS();
     }, []);
     return (
         <>

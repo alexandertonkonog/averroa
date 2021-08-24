@@ -9,7 +9,7 @@ const Result = (props) => {
         return <Success commonState={props.commonState} />
     } 
 
-    return <ErrorResult />
+    return <ErrorResult commonState={props.commonState} />
 
 }
 

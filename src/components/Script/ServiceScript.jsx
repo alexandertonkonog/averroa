@@ -21,7 +21,7 @@ const ServiceScript =  (props) => {
                 <Confirm commonState={props.commonState} />
             </Route>
             <Route path="/open/services/:id/specialists/date/personal" >
-                <Wizard commonState={props.commonState}>
+                <Wizard onSubmit={props.onSubmit} commonState={props.commonState}>
                     <Personal commonState={props.commonState} />
                     <Confirm commonState={props.commonState} />
                 </Wizard>

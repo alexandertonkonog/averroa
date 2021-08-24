@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 import { DateFormatter } from '../../utils/utils';
+import Back from '../Block/Back';
 
 const DateTime = (props) => {
     let [date, setDate] = useState(new Date());
@@ -33,6 +34,7 @@ const DateTime = (props) => {
     return (
         <>
             <h2 className="bit_title bit_title_second">Выберите дату и время приема</h2>
+            <Back state={state} />
             <section className="bit_block bit_block_calendar">
                 <div className="bit_shadow bit_block__calendar-item">
                     <div className="bit_calendar-container">
@@ -98,7 +100,8 @@ const DateTime = (props) => {
                                                                 const path = history.location.pathname;
                                                                 history.push(path + '/personal')
                                                             }}>
-                                                                {item.visible}</div>
+                                                                {item.start} - {item.end}
+                                                        </div>
                                                     ))}
                                             </div>
                                         : <p className="bit_text bit_time__text">Выберите дату записи</p>

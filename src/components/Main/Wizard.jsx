@@ -7,6 +7,7 @@ const Wizard = (props) => {
 
     let [page, setPage] = useState(0);
     let [values, setValues] = useState({});
+    let [loading, setLoading] = useState(false);
     let [state, dispatch] = props.commonState;
 
     const children = props.children;
@@ -16,10 +17,13 @@ const Wizard = (props) => {
         setValues(values);
     }
     
-    const handleSubmit = (values, form) => {
+    const handleSubmit = async (values, form) => {
         const isLastPage = page === children.length - 1
         if (isLastPage) {
-            return props.onSubmit(values, form);
+            setLoading(true);
+            const result = await props.onSubmit(values, form);
+            setLoading(false);
+            return result;
         } else {
             return next(values);
         }
@@ -36,7 +40,8 @@ const Wizard = (props) => {
                 return (
                     <form onSubmit={handleSubmit} className="bit_form">
                         {activePage}
-                        {!state.notService && <LoadButton text={isLastPage ? 'Записаться' : 'Следующий шаг'} loading={props.isLoading} />}
+                        {!state.notService 
+                            && <LoadButton text={isLastPage ? 'Записаться' : 'Следующий шаг'} loading={loading} />}
                     </form>
                 )
             }}

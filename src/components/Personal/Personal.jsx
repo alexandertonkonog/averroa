@@ -5,6 +5,7 @@ import Checkbox from "../Input/Checkbox";
 import user from '../../images/user.svg';
 import { DateFormatter } from "../../utils/utils";
 import { Redirect } from "react-router-dom";
+import Back from "../Block/Back";
 
 const Personal = (props) => {
     const [state, dispatch] = props.commonState;
@@ -27,6 +28,7 @@ const Personal = (props) => {
     return (
         <>
             <h2 className="bit_title bit_title_second">Введите личные данные</h2>
+            <Back state={state} />
             <section className="bit_block bit_block_personal">
                 <div className="bit_personal bit_shadow">
                     {fields.map(item => <Input key={item.id} {...item} />)}

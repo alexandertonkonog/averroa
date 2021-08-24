@@ -1,8 +1,8 @@
 import { ServiceFormatter } from "../utils/utils";
 
 const DATA_URL = 'http://wp.loc/wp-json/1bit/data';
-const SCHEDULE_URL = '/api/schedule.json';
-const APPOINTMENT_URL = '/api/appointment';
+const SCHEDULE_URL =  'http://wp.loc/wp-json/1bit/schedule' //'/api/schedule.json'; 
+const APPOINTMENT_URL = 'http://wp.loc/wp-json/1bit/appointment';
 let SMS_URL = '/api/sms';
 
 const createCode = () => {
@@ -20,7 +20,7 @@ const createCode = () => {
 }
 
 export const getData = async (stateRes) => {
-    const [state, dispatch] = stateRes;
+    const [_, dispatch] = stateRes;
     const serviceFormatter = ServiceFormatter.getInstance();
     try {
         const response = await fetch(DATA_URL, {
@@ -28,11 +28,15 @@ export const getData = async (stateRes) => {
                 'Authorization': 'Basic ' + btoa('admin:123456')
             }
         });
+        
         const data = await response.json();
         const services = serviceFormatter.getAllServices(data.services)
         data.services = services;
         dispatch({type: 'GET_DATA', data}); 
+        return true;
     } catch(e) {
+        dispatch({type: 'SET_ERROR', payload: true}); 
+        return false;
         console.log(e)
     }
 }
@@ -46,40 +50,50 @@ export const sendCode = async (stateRes) => {
         });
         const data = await response.json();
         dispatch({type: 'SET_CODE', code});
+        return true;
     } catch (e) {
         dispatch({type: 'SET_CODE', code});
+        dispatch({type: 'SET_ERROR', payload: true}); 
         // dispatch({type: 'SET_CODE', code: null});
+        return true;
     }
 }
 
-export const getSchedule = async (stateRes) => {
-    const [_, dispatch] = stateRes;
-    try {
-        const response = await fetch(SCHEDULE_URL, {
-            // method: 'POST',
-            method: 'GET',
-            // body: JSON.stringify({
-            //     method: 'schedule',
-            //     data: []
-            // })
-        });
-        const data = await response.json();
-        dispatch({type: 'SET_SCHEDULE', data: data.schedule});
-    } catch (e) {
-        console.log(e)
-    }
-}
+// export const getSchedule = async (stateRes) => {
+//     const [_, dispatch] = stateRes;
+//     try {
+//         const response = await fetch(SCHEDULE_URL, {
+//             method: 'GET',
+//             headers: {
+//                 'Authorization': 'Basic ' + btoa('admin:123456')
+//             }
+//         });
+//         const data = await response.json();
+//         dispatch({type: 'SET_SCHEDULE', data: data.schedule});
+//         return true;
+//     } catch (e) {
+//         dispatch({type: 'SET_ERROR', payload: true}); 
+//         console.log(e)
+//     }
+// }
 
 export const sendData = async (stateRes, body) => {
     const [_, dispatch] = stateRes;
     try {
         const response = await fetch(APPOINTMENT_URL, {
             method: 'POST',
-            body
+            headers: {
+                'Authorization': 'Basic ' + btoa('admin:123456')
+            },
+            body: JSON.stringify(body)
         });
+        // if (response.status !== 200) {
+        //     return false;
+        // }
         const data = await response.json();
         return true;
     } catch (e) {
+        dispatch({type: 'SET_ERROR', payload: true}); 
         console.log(e)
         return false;
     }

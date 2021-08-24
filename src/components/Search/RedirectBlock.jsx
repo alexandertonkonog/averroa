@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { Redirect, useParams } from "react-router-dom";
-import { getData, getSchedule } from "../../api/api";
+import { getData } from "../../api/api";
 import { ServiceFormatter } from "../../utils/utils";
 import loader from '../../images/load.gif';
 
@@ -11,9 +11,6 @@ const RedirectBlock = ({commonState}) => {
     useEffect(() => {
         if (!state.isDataLoaded) {
             getData(commonState);
-        }
-        if (!state.schedule) {
-            getSchedule(commonState);
         }
     }, []);
 

@@ -1,16 +1,13 @@
 import { useHistory } from "react-router-dom";
+import Back from "./Back";
 
 const BlockBack = ({state}) => {
 
     const history = useHistory();
 
     return (
-        <li  
-            onClick={() => {
-                history.push(state.bread[state.bread.length - 2].link);
-            }}
-            className="bit_list__item">
-                Назад
+        <li>
+            <Back state={state} />
         </li>
     );
 }

@@ -1,13 +1,22 @@
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 
 
-const ErrorResult = () => {
+const ErrorResult = ({commonState}) => {
+    const [state, dispatch] = commonState;
+
+    if (!state.error) {
+        return <Redirect to="/open" />
+    }
+
     return (
         <div className="bit_block">
-            <h2 className="bit_title">Произошла ошибка! Попробуйте записаться еще раз или зайдите позднее</h2>
-            <Link to="/open">
-                <button className="bit_btn">Записаться еще раз</button>
-            </Link>
+            <div className="bit_result">
+                <h2 className="bit_title">Произошла ошибка!</h2>
+                <p className="bit_text">Попробуйте записаться еще раз или зайдите позднее</p>
+                <Link to="/open" onClick={() => dispatch({type: "SET_ERROR", payload: false})}>
+                    <button className="bit_btn">Записаться еще раз</button>
+                </Link>
+            </div>
         </div>
     );
 }
