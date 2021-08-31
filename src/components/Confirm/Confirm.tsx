@@ -5,11 +5,18 @@ import { sendCode } from "../../api/api";
 import { isEqual } from "../../validate/validate";
 import Input from "../Input/Input";
 import loader from '../../images/load.gif';
+import { StateType } from "../../types/state";
 
-const Confirm = (props) => {
+type ConfirmProps = {
+    onSubmit: (values: object) => void,
+    commonState: [state: StateType, dispatch: any]
+}
+
+const Confirm = (props: ConfirmProps) => {
     const [state, dispatch] = props.commonState;
-    const [loading, setLoading] = useState(false);
-    const [smsLoading, setSmsLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [smsLoading, setSmsLoading] = useState<boolean>(false);
+
     const history = useHistory();
     const field = useField('number');
     const form = useForm();

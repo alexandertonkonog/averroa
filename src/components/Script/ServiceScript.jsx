@@ -4,7 +4,7 @@ import Block from "../Block/Block";
 import Specialist from "../Specialist/Specialist";
 import DateTime from "../DateTime/DateTime";
 import Personal from "../Personal/Personal";
-import Confirm from "../Confirm/Confirm";
+import Confirm from "../Confirm/Confirm.tsx";
 import Wizard from "../Main/Wizard";
 
 const ServiceScript =  (props) => {

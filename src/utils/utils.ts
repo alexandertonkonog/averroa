@@ -1,30 +1,45 @@
+import { StateType, BreadType } from './../types/state';
+import { ServiceEntityType } from './../types/entities';
+import { Location } from 'history';
+
+interface DictType {
+    [key: string]: string,
+    open: string,
+    specialists: string,
+    services: string,
+    date: string,
+    personal: string
+}
+
 export class ServiceFormatter {
-    constructor(state) {
+
+    private root: string;
+    private static instance: ServiceFormatter;
+    private readonly dict: DictType = {
+        open: 'Выбор сценария',
+        specialists: 'Выбор специалиста',
+        services: 'Выбор группы',
+        date: 'Выбор времени',
+        personal: 'Личные данные'
+    };
+
+    constructor() {
         this.root = '00000000-0000-0000-0000-000000000000';
     }
 
-    static getInstance(state = {}) {
-        if (ServiceFormatter.instance) {
-            return ServiceFormatter.instance;
-        } else {
-            ServiceFormatter.instance = new ServiceFormatter(state);
-            return ServiceFormatter.instance;
-        }
+    static getInstance(): ServiceFormatter {
+        if (!ServiceFormatter.instance) {
+            ServiceFormatter.instance = new ServiceFormatter();
+        } 
+        return ServiceFormatter.instance;
     }
 
-    getBread(location, state) {
-        const dict = {
-            open: 'Выбор сценария',
-            specialists: 'Выбор специалиста',
-            services: 'Выбор группы',
-            date: 'Выбор времени',
-            personal: 'Личные данные'
-        };
-        const pathname = location.pathname;
-        const elems = pathname.split('/').slice(1);
-        const resultElems = [];
+    getBread(location: Location, state: StateType) {
+        const pathname: string = location.pathname;
+        const elems: string[] = pathname.split('/').slice(1);
+        const resultElems: (string | BreadType)[] = [];
         elems.forEach(item => {
-            if (item in dict) {
+            if (item in this.dict) {
                 resultElems.push(item);
             } else {
                 if (state.services) {
@@ -33,67 +48,71 @@ export class ServiceFormatter {
                 }
             }
         })
-        return resultElems.map(item => {
-            const elem = {link: this.getFullLinkByName(item, location.pathname)};
-            
-            if (item in dict) {
-                elem.name = dict[item];
-            } else if (typeof item === 'object') {
+        return resultElems.map((item: string | BreadType) => {
+            const elem: BreadType = {link: this.getFullLinkByName(item, location.pathname), name: ''};
+            if (typeof item === 'object') {
                 elem.name = item.name;
+            } else if (item in this.dict) {
+                elem.name = this.dict[item];
             } else {
                 elem.name = 'Не найден'
             }
+
             return elem;
         })
     }
 
-    getServiceChain(id, state) {
-        const service = state.services.find(item => item.id === id);
+    getServiceChain(id: string, state: StateType): BreadType[] | null {
+        if (!state.services) return null;
+        const service: ServiceEntityType | undefined = state.services.find(item => item.id === id);
         if (service) {
             if (service.parent === this.root) {
                 return [{name: service.name, link: id}];
             } else {
-                const services = this.getServiceChain(service.parent, state);
+                const services: BreadType[] | null = this.getServiceChain(service.parent, state);
+                const breadItem: BreadType = {name: service.name, link: id};
                 if (services) {
-                    return [...services, {name: service.name, link: id}]
+                    return [...services, breadItem]
                 } else {
-                    return [{name: service.name, link: id}];
+                    return [breadItem];
                 }
             }
         }
         return null;
     }
 
-    getFullLinkByName(link, pathname) {
+    getFullLinkByName(link: string | BreadType, pathname: string): string {
 
-        const locLink = typeof link === 'object' ? link.link : link;
+        const locLink: string = typeof link === 'object' ? link.link : link;
         const index = pathname.indexOf(locLink);
         if (index === -1) {
-            const arr = pathname.split('/');
+            const arr:string[] = pathname.split('/');
             arr[arr.length - 1] = locLink;
             return arr.join('/');
         }
         return pathname.slice(0, index + locLink.length)
     }
 
-    getServicesByName(text, state) {
-        if (text && text.length > 2) {
+    getServicesByName(text: string, state: StateType): ServiceEntityType[] | null {
+        if (text && text.length > 2 && state.services) {
             const lowerText = text.toLowerCase();
-            const services = state.services.filter(item => {
+            const services: ServiceEntityType[] | null = state.services.filter(item => {
                 const name = item.name.toLowerCase();
                 return name.includes(lowerText);
             });
             return services.slice(0, 10);
         } 
+        return null;
     }
 
-    getSearchLink(id, state) {
-        const service = state.services.find(item => item.id === id);
+    getSearchLink(id: string, state: StateType) :string | null {
+        if (!state.services) return null;
+        const service: ServiceEntityType = state.services.find(item => item.id === id);
         if (service) {
             if (service.parent === this.root) {
                 return '/open/services';
             } else {
-                const parent = state.services.find(item => item.id === service.parent);
+                const parent: ServiceEntityType = state.services.find(item => item.id === service.parent);
                 if (parent) {
                     return '/open/services/' + parent.id;
                 } else {
@@ -105,8 +124,8 @@ export class ServiceFormatter {
         }
     }
 
-    getAllServices(services, id = '00000000-0000-0000-0000-000000000000') {
-        const root = services.find(item => item.parent === id);
+    getAllServices(services: ServiceEntityType[], id: string = '00000000-0000-0000-0000-000000000000') {
+        const root: ServiceEntityType = services.find(item => item.parent === id);
         const filteredServices = services.filter(item => item.id !== root.id);
         const rootServices = services.filter(item => item.parent === root.id);
         if (rootServices.length === 1) {
@@ -168,28 +187,20 @@ export class ServiceFormatter {
 }
 
 export class DateFormatter {
-    /**
-     * 
-     * @param {Date} date 
-     * @returns {Number} minutes
-     */
+   
     static getMinutes(date) {
         const hours = date.getHours();
         const minutes = date.getMinutes();
         return hours * 60 + minutes;
     }
-    /**
-     * 
-     * @param {Date} date 
-     * @returns {String} date in format "day.month"
-     */
-    static getStandardDate(date) {
+    
+    static getStandardDate(date: Date) :string {
         const days = DateFormatter.setZero(date.getDate());
         const month = DateFormatter.setZero(date.getMonth() + 1);
         return days + '.' + month; 
     }
 
-    static getStandardTime(date) {
+    static getStandardTime(date: Date) :string {
         const hours = DateFormatter.setZero(date.getHours());
         const minutes = DateFormatter.setZero(date.getMinutes());
         return hours + ':' + minutes; 
@@ -198,12 +209,7 @@ export class DateFormatter {
     static setZero (n) {
         return n < 10 ? '0' + n : n;
     }
-    /**
-     * 
-     * @param {Date} date 
-     * @param {Object} doctor  
-     * @returns {String} date in format "day.month"
-     */
+    
     static getMonthsDays(date, doctor) {
         const localDate = new Date(date);
         const days = [];
@@ -282,7 +288,7 @@ export class DateFormatter {
         return result;
     }
 
-    static getISODate(str) {
+    static getISODate(str: string): string {
         const date = new Date(str);
         return date.getFullYear()+'-'
         + DateFormatter.setZero(date.getMonth()+1)+'-'

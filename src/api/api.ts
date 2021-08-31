@@ -1,4 +1,9 @@
+import React from 'react';
+import { ServiceEntityType } from './../types/entities';
+import { StateData, StateType, FormValues, ReducerAction } from './../types/state';
 import { ServiceFormatter, DateFormatter } from "../utils/utils";
+
+type LocalStateType = [StateType, (a: ReducerAction) => any ];
 
 // const DATA_URL = 'https://emb-beauty.ru/wp-json/1bit/data';
 // const APPOINTMENT_URL = 'https://emb-beauty.ru/wp-json/1bit/appointment';
@@ -7,7 +12,7 @@ const APPOINTMENT_URL = 'http://wp.loc/wp-json/1bit/appointment';
 const SMS_URL = 'http://wp.loc/wp-json/1bit/sms';
 const AUTH = 'Basic ' + btoa('admin:123456');
 
-const createCode = () => {
+const createCode = () :string => {
     let string = "";
     for (let i = 0; i < 3; i++) {
       string += String(Math.round(Math.random() * 100));
@@ -21,7 +26,7 @@ const createCode = () => {
     return string;
 }
 
-export const getData = async (stateRes) => {
+export const getData = async (stateRes :LocalStateType) => {
     const [_, dispatch] = stateRes;
     const serviceFormatter = ServiceFormatter.getInstance();
     try {
@@ -31,10 +36,10 @@ export const getData = async (stateRes) => {
             }
         });
         
-        const data = await response.json();
-        const services = serviceFormatter.getAllServices(data.services)
+        const data:StateData = await response.json();
+        const services:ServiceEntityType[] = serviceFormatter.getAllServices(data.services)
         data.services = services;
-        dispatch({type: 'GET_DATA', data}); 
+        dispatch({type: 'GET_DATA', payload: data}); 
         return true;
     } catch(e) {
         dispatch({type: 'SET_ERROR', payload: true}); 
@@ -42,7 +47,7 @@ export const getData = async (stateRes) => {
     }
 }
 
-export const sendCode = async (stateRes, number) => {
+export const sendCode = async (stateRes:LocalStateType, number:string) => {
     const [_, dispatch] = stateRes;
     const code = createCode();
     try {
@@ -58,52 +63,43 @@ export const sendCode = async (stateRes, number) => {
         });
         const data = await response.json();
         if (!data.error) {
-            dispatch({type: 'SET_CODE', code});
+            dispatch({type: 'SET_CODE', payload: code});
             return {status: true};
         } else if (data.error && data.error_code === 3) {
-            dispatch({type: 'SET_CODE', code});
+            dispatch({type: 'SET_CODE', payload: code});
             return {status: false, error: data.error_code, code};
         } else {
-            dispatch({type: 'SET_CODE', code: null});
+            dispatch({type: 'SET_CODE', payload: null});
             dispatch({type: 'SET_ERROR', payload: true}); 
             return {status: false, error: data.error_code, code};
         }
     } catch (e) {
         dispatch({type: 'SET_ERROR', payload: true}); 
-        dispatch({type: 'SET_CODE', code: null});
+        dispatch({type: 'SET_CODE', payload: null});
         return {status: false, error: 0, code};
     }
 }
 
-// export const getSchedule = async (stateRes) => {
-//     const [_, dispatch] = stateRes;
-//     try {
-//         const response = await fetch(SCHEDULE_URL, {
-//             method: 'GET',
-//             headers: {
-//                 'Authorization': 'Basic ' + btoa('admin:123456')
-//             }
-//         });
-//         const data = await response.json();
-//         dispatch({type: 'SET_SCHEDULE', data: data.schedule});
-//         return true;
-//     } catch (e) {
-//         dispatch({type: 'SET_ERROR', payload: true}); 
-//         console.log(e)
-//     }
-// }
-
-const getInfoMessages = (state, body) => {
-    const stdDate = DateFormatter.getStandardDate(new Date(state.dateTime));
-    const stdTime = DateFormatter.getStandardTime(new Date(state.dateTime));
-    const userMessage = `Вы записались на прием к специалисту ${state.doctor.name} ${stdDate} в ${stdTime}`;
-    const adminMessage = `${body.name} ${body.surname} записалcя на прием к специалисту ${state.doctor.name} ${stdDate} в ${stdTime}. Его номер +${body.number}. Это сообщение создано автоматически, пожалуйста, не отвечайте на него.`;
-    return [userMessage, adminMessage];
+const getInfoMessages = (state: StateType, body: FormValues) : string[] | null => {
+    if (state.doctor && state.dateTime) {
+        const stdDate = DateFormatter.getStandardDate(new Date(state.dateTime));
+        const stdTime = DateFormatter.getStandardTime(new Date(state.dateTime));
+        const userMessage = `Вы записались на прием к специалисту ${state.doctor.name} ${stdDate} в ${stdTime}`;
+        const adminMessage = `${body.name} ${body.surname} записалcя на прием к специалисту ${state.doctor.name} ${stdDate} в ${stdTime}. Его номер +${body.number}. Это сообщение создано автоматически, пожалуйста, не отвечайте на него.`;
+        return [userMessage, adminMessage];
+    } 
+    return null;
 }
 
-export const sendData = async (stateRes, body) => {
+export const sendData = async (stateRes: LocalStateType, body: FormValues) => {
     const [state, dispatch] = stateRes;
-    const [userMessage, adminMessage] = getInfoMessages(state, body);
+    const infoMessages = getInfoMessages(state, body);
+    let userMessage, adminMessage;
+    if (infoMessages) {
+        [userMessage, adminMessage] = infoMessages;
+    } else {
+        return false;
+    }
     try {
         const response = await fetch(APPOINTMENT_URL, {
             method: 'POST',
@@ -116,7 +112,7 @@ export const sendData = async (stateRes, body) => {
             return false;
         }
         
-        const data = await response.json();
+        const data: {success: boolean} = await response.json();
         return true;
     } catch (e) {
         dispatch({type: 'SET_ERROR', payload: true}); 

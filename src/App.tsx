@@ -2,19 +2,20 @@ import { Switch, Link, Route } from 'react-router-dom';
 import { useReducer } from 'react';
 import Wrapper from './components/Main/Wrapper';
 import "./css/style.css";
+import { StateType, ReducerAction } from './types/state';
 
 const App = () => {
-    const reducer = (state, action) => {
+    const reducer = (state: StateType, action: ReducerAction) :StateType => {
         switch (action.type) {
             case 'CHANGE_SEX':
                 return {
                     ...state,
-                    sex: action.sex
+                    sex: action.payload
                 }
             case 'CHANGE_SCRIPT':
                 return {
                     ...state,
-                    script: action.script,
+                    script: action.payload,
                     service: null,
                     doctor: null,
                     sex: null,
@@ -25,9 +26,9 @@ const App = () => {
                 return {
                     ...state,
                     isDataLoaded: true,
-                    services: action.data.services,
-                    doctors: action.data.doctors,
-                    schedule: action.data.schedule
+                    services: action.payload.services,
+                    doctors: action.payload.doctors,
+                    schedule: action.payload.schedule
                 }
             case 'SET_FINAL_STATE':
                 return {
@@ -47,7 +48,7 @@ const App = () => {
             case 'SET_DOCTOR':
                 return {
                     ...state,
-                    doctor: action.id
+                    doctor: action.payload
                 }
             case 'SET_ERROR':
                 return {
@@ -67,7 +68,7 @@ const App = () => {
             case 'SET_CODE':
                 return {
                     ...state,
-                    code: action.code
+                    code: action.payload
                 }
             case 'SET_BREAD':
                 return {
@@ -78,11 +79,6 @@ const App = () => {
                 return {
                     ...state,
                     bread: state.bread.filter(item => item.name !== action.payload)
-                }
-            case 'SET_FORMATTER':
-                return {
-                    ...state,
-                    serviceFormatter: action.serviceFormatter
                 }
             case 'SET_SERVICE':
                 return {
@@ -100,21 +96,28 @@ const App = () => {
         }
     }
 
-    const initialState = {
+    const initialState :StateType  = {
         sex: null,
         script: 2,
         bread: [],
-        data: null,
+        date: null,
         service: null,
         services: null,
-        notService: false,
         formData: null,
         code: null,
-        schedule: null
+        schedule: null,
+        dateTime: null,
+        doctors: null,
+        doctor: null,
+        resultState: null,
+        error: null,
+        activeBlock: null,
+        isDataLoaded: false
     }
 
     const resReducer = useReducer(reducer, initialState);
-    window.store = resReducer[0];
+    
+    // window.store = resReducer[0] as StateType;
 
     return (
         <Switch>
