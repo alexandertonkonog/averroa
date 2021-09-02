@@ -37,10 +37,13 @@ export const getData = async (stateRes :LocalStateType) => {
         });
         
         const data:StateData = await response.json();
-        const services:ServiceEntityType[] = serviceFormatter.getAllServices(data.services)
-        data.services = services;
-        dispatch({type: 'GET_DATA', payload: data}); 
-        return true;
+        const services: ServiceEntityType[] | null = serviceFormatter.getAllServices(data.services);
+        if (services) {
+            data.services = services;
+            dispatch({type: 'GET_DATA', payload: data}); 
+            return true;
+        }
+        return false;
     } catch(e) {
         dispatch({type: 'SET_ERROR', payload: true}); 
         return false;

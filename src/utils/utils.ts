@@ -15,6 +15,7 @@ export class ServiceFormatter {
 
     private root: string;
     private static instance: ServiceFormatter;
+    private serviceLevels: Array<Array<ServiceEntityType>> = [];
     private readonly dict: DictType = {
         open: 'Выбор сценария',
         specialists: 'Выбор специалиста',
@@ -107,12 +108,12 @@ export class ServiceFormatter {
 
     getSearchLink(id: string, state: StateType) :string | null {
         if (!state.services) return null;
-        const service: ServiceEntityType = state.services.find(item => item.id === id);
+        const service = state.services.find(item => item.id === id);
         if (service) {
             if (service.parent === this.root) {
                 return '/open/services';
             } else {
-                const parent: ServiceEntityType = state.services.find(item => item.id === service.parent);
+                const parent = state.services.find(item => item.id === service.parent);
                 if (parent) {
                     return '/open/services/' + parent.id;
                 } else {
@@ -124,24 +125,35 @@ export class ServiceFormatter {
         }
     }
 
-    getAllServices(services: ServiceEntityType[], id: string = '00000000-0000-0000-0000-000000000000') {
-        const root: ServiceEntityType = services.find(item => item.parent === id);
-        const filteredServices = services.filter(item => item.id !== root.id);
-        const rootServices = services.filter(item => item.parent === root.id);
-        if (rootServices.length === 1) {
-            return this.getAllServices(filteredServices, rootServices[0].id);
-        } else {
-            this.root = id;
-            return services;
+    getAllServices(services: ServiceEntityType[], id: string = '00000000-0000-0000-0000-000000000000'): ServiceEntityType[] | null {
+        const root = services.find(item => item.parent === id);
+        if (root) {
+            const filteredServices = services.filter(item => item.id !== root.id);
+            const rootServices = services.filter(item => item.parent === root.id);
+            if (rootServices.length === 1) {
+                return this.getAllServices(filteredServices, rootServices[0].id);
+            } else {
+                this.root = id;
+                return services;
+            }
         }
+        return null;
     }
 
-    filterServices(state) {
+    filterServices(state: StateType): ServiceEntityType[] {
         let changed = false;
+        if (!state.services) {
+            return [];
+        }
         this.serviceLevels = [state.services];
         if (state.doctor) {
             changed = true;
-            this.serviceLevels[0] = state.doctor.services.map(item => state.services.find(elem => elem.id === item)).filter(item => item);
+            const mappedServices = state.doctor.services.map(item => state.services!.find(elem => elem.id === item)).filter(item => item);
+            if (mappedServices) {
+                this.serviceLevels[0] = mappedServices;
+            }
+            
+            if (!this.serviceLevels[0]) return [];
         }
         if (state.sex) {
             changed = true;
