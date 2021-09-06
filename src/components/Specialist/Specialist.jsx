@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 import BlockBack from '../Block/BlockBack';
 
@@ -33,6 +34,12 @@ const Specialist = (props) => {
 
     </svg>;
     const link = state.script === 1 ? '/open/specialists/services' : location.pathname + '/date';
+
+    useEffect(() => {
+        if (state.script === 1 && state.service) {
+            dispatch({type: 'SET_SERVICE', payload: null})
+        }
+    }, [])
     
     if (state.script === 2 && !state.service) {
         return <Redirect to="/open" />
@@ -58,7 +65,7 @@ const Specialist = (props) => {
                                         className={state.doctor && state.doctor.id === item.id
                                             ? "bit_list__item bit_list__item_active"
                                             : "bit_list__item"}>
-                                            <p className="bit_list__item_spec">
+                                            <p className="bit_list__item_spec bit_list__item-name">
                                                 {item.img 
                                                     ? <img 
                                                         src={item.img} 

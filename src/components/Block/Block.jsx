@@ -14,6 +14,7 @@ const Block = (props) => {
     const serviceFormatter = ServiceFormatter.getInstance();
 
     const backBlock = {id: 0, name: 'Назад', back: true, link: '/open'};
+
     const data = [backBlock, ...serviceFormatter.getStageServices(params, state)];
 
     const serviceCallback = (item) => {
@@ -23,6 +24,12 @@ const Block = (props) => {
     const groupLink = state.script === 1 ? '/open/specialists/services/' : '/open/services/';
     const addLink = state.script === 1 ? '/date' : '/specialists';
     const serviceLink = location.pathname + addLink;
+
+    useEffect(() => {
+        if (state.script === 2 && state.doctor) {
+            dispatch({type: 'SET_DOCTOR', payload: null})
+        }
+    }, [])
 
     if (state.script === 1 && !state.doctor) {
         return <Redirect to="/open" />

@@ -122,7 +122,16 @@ export class ServiceFormatter {
         this.serviceLevels = [state.services];
         if (state.doctor) {
             changed = true;
-            this.serviceLevels[0] = state.doctor.services.map(item => state.services.find(elem => elem.id === item)).filter(item => item);
+            this.serviceLevels[0] = [];
+            state.doctor.services.forEach(item => {
+                const service = state.services.find(elem => elem.id === item);
+                if (service) {
+                    const cond = this.serviceLevels[0].some(elem => elem.id === service.id);
+                    if (!cond) {
+                        this.serviceLevels[0].push(service);
+                    }
+                }
+            })
         }
         if (state.sex) {
             changed = true;

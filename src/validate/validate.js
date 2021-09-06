@@ -11,7 +11,6 @@ export const isLength = (min = 3, max = 50, str = 'имя') => (value) => {
     }
 }
 export const isEqual = (str, error) => (value) => {
-    console.log(str)
     if (!value) return 'Поле код обязательно';
     if (str !== value) return error;
 }

@@ -121,11 +121,6 @@ const App = () => {
             <Route path="/open">
                 <Wrapper resReducer={resReducer} /> 
             </Route>
-            <Route path="/" exact>
-                <div className='bit_widget'>
-                    <Link to="/open" className="bit_widget-toggler">Open</Link>
-                </div>
-            </Route>
         </Switch>
     );
 }

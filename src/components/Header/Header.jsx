@@ -27,7 +27,7 @@ const Header = ({ state, select }) => {
                         value={sex} 
                         state={state} 
                         title="Выберите пол" />
-                </Route>   
+                </Route> 
                 <Link className="bit_header__exit" to="/">
                     <img src={logo} alt="Закрыть окно" title="Закрыть окно" className="bit_header__exit-logo" />
                 </Link>

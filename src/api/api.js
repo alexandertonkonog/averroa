@@ -1,11 +1,12 @@
 import { ServiceFormatter, DateFormatter } from "../utils/utils";
 
-// const DATA_URL = 'https://emb-beauty.ru/wp-json/1bit/data';
-// const APPOINTMENT_URL = 'https://emb-beauty.ru/wp-json/1bit/appointment';
-const DATA_URL = 'http://wp.loc/wp-json/1bit/data';
-const APPOINTMENT_URL = 'http://wp.loc/wp-json/1bit/appointment';
-const SMS_URL = 'http://wp.loc/wp-json/1bit/sms';
-const AUTH = 'Basic ' + btoa('admin:123456');
+const DATA_URL = 'https://emb-beauty.ru/wp-json/1bit/data';
+const APPOINTMENT_URL = 'https://emb-beauty.ru/wp-json/1bit/appointment';
+// const DATA_URL = 'http://wp.loc/wp-json/1bit/data';
+// const APPOINTMENT_URL = 'http://wp.loc/wp-json/1bit/appointment';
+// const SMS_URL = 'http://wp.loc/wp-json/1bit/sms';
+const SMS_URL = 'https://emb-beauty.ru/wp-json/1bit/sms';
+const AUTH = 'Basic ' + btoa('beauty:8LKylLkR');
 
 const createCode = () => {
     let string = "";
