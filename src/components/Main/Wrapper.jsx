@@ -63,6 +63,17 @@ const Wrapper = (props) => {
         loadData();
     }, []);
 
+    useEffect(() => {
+        document.body.style.overflowY = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.top = "0";
+        document.body.style.left = "0";
+        return () => {
+            document.body.style.overflowY = "auto";
+            document.body.style.position = "static";
+        }
+    }, [])
+
     return (
         <div className='bit_widget bit_widget_open'>
             <div className="bit_container">
