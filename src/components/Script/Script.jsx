@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { reachGoal } from '../../utils/utils';
 
 const Script = (props) => {
 
@@ -43,6 +44,10 @@ const Script = (props) => {
         {id: 2, link: '/services', name: 'По услугам', logo: scissors, callback: () => {}}
     ];
     const [state, dispatch] = props.commonState;
+
+    useEffect(() => {
+        reachGoal('widget_script');
+    }, [])
 
     return (
         <>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Redirect, useParams, useLocation } from 'react-router-dom';
-import { ServiceFormatter } from '../../utils/utils';
+import { ServiceFormatter, reachGoal } from '../../utils/utils';
 import Search from '../Search/Search';
 import BlockGroup from './BlockGroup';
 import BlockService from './BlockService';
@@ -29,6 +29,10 @@ const Block = (props) => {
         if (state.script === 2 && state.doctor) {
             dispatch({type: 'SET_DOCTOR', payload: null})
         }
+    }, [])
+
+    useEffect(() => {
+        reachGoal('widget_service');
     }, [])
 
     if (state.script === 1 && !state.doctor) {

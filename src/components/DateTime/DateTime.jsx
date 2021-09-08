@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
-import { DateFormatter } from '../../utils/utils';
+import { DateFormatter, reachGoal } from '../../utils/utils';
 import Back from '../Block/Back';
 
 const DateTime = (props) => {
@@ -11,6 +11,10 @@ const DateTime = (props) => {
     const daysOfWeek = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
     const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 
+    useEffect(() => {
+        reachGoal('widget_date');
+    }, [])
+
     if (!state.service || !state.doctor) {
         return <Redirect to="/open" />
     }
@@ -20,7 +24,7 @@ const DateTime = (props) => {
     const schedule = state.schedule.find(item => item.doctor_id === doctor.id);
     const days = DateFormatter.getMonthsDays(date, schedule);
     const times = state.date && DateFormatter.getTimeElements(date, schedule, state);
-
+    
     const changeMonth = (vector) => {
         const otherDate = new Date(date);
         if (vector) {

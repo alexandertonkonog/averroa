@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useField, useForm } from "react-final-form";
 import { useHistory } from "react-router-dom";
 import { sendCode } from "../../api/api";
+import { reachGoal } from "../../utils/utils";
 import { isEqual } from "../../validate/validate";
 import Input from "../Input/Input";
 import loader from '../../images/load.gif';
@@ -37,6 +38,10 @@ const Confirm = (props) => {
     useEffect(() => {
         sendSMS();
     }, []);
+
+    useEffect(() => {
+        reachGoal('widget_sms');
+    }, [])
 
     return (
         <>

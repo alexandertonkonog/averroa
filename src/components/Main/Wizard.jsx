@@ -30,7 +30,6 @@ const Wizard = (props) => {
     }
 
     const activePage = children[page];
-    const isLastPage = page === children.length - 1;
 
     return (
         <Form
@@ -41,7 +40,7 @@ const Wizard = (props) => {
                     <form onSubmit={handleSubmit} className="bit_form">
                         {activePage}
                         {!state.notService 
-                            && <LoadButton text={isLastPage ? 'Записаться' : 'Следующий шаг'} loading={loading} />}
+                            && <LoadButton text={'Записаться'} loading={loading} />}
                     </form>
                 )
             }}

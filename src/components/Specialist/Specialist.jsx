@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 import BlockBack from '../Block/BlockBack';
+import { reachGoal } from '../../utils/utils';
 
 const Specialist = (props) => {
 
@@ -39,6 +40,10 @@ const Specialist = (props) => {
         if (state.script === 1 && state.service) {
             dispatch({type: 'SET_SERVICE', payload: null})
         }
+    }, [])
+
+    useEffect(() => {
+        reachGoal('widget_doctor');
     }, [])
     
     if (state.script === 2 && !state.service) {

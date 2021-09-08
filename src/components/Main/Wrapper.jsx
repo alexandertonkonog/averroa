@@ -6,7 +6,7 @@ import loader from '../../images/load.gif';
 import Bread from '../Bread/Bread';
 import Script from '../Script/Script';
 import SpecialistScript from '../Script/SpecialistScript';
-import { ServiceFormatter } from '../../utils/utils'
+import { ServiceFormatter, reachGoal } from '../../utils/utils'
 import ServiceScript from '../Script/ServiceScript';
 import RedirectBlock from '../Search/RedirectBlock';
 import Result from './Result';
@@ -29,6 +29,7 @@ const Wrapper = (props) => {
         const result = await sendData(props.resReducer, payload);
         if (result) {
             dispatch({type: 'SET_FINAL_STATE', payload: values});
+            reachGoal('widget_sms');
             history.push('/open/result/success');
         } else {
             history.push('/open/result/error');
@@ -73,6 +74,10 @@ const Wrapper = (props) => {
             document.body.style.position = "static";
         }
     }, [])
+
+    useEffect(() => {
+        reachGoal('widget_open');
+    }, []);
 
     return (
         <div className='bit_widget bit_widget_open'>

@@ -1,9 +1,10 @@
+import { useEffect } from 'react';
 import { isLength, isRequired } from "../../validate/validate";
 import Input from "../Input/Input";
 import NumberInput from "../Input/Number";
 import Checkbox from "../Input/Checkbox";
 import user from '../../images/user.svg';
-import { DateFormatter } from "../../utils/utils";
+import { DateFormatter, reachGoal } from "../../utils/utils";
 import { Redirect } from "react-router-dom";
 import Back from "../Block/Back";
 
@@ -15,6 +16,10 @@ const Personal = (props) => {
     ]
     
     const { service, doctor, dateTime } = state;
+
+    useEffect(() => {
+        reachGoal('widget_personal');
+    }, [])
 
     if (!service || !doctor || !dateTime) {
         return <Redirect to="/open" />;
