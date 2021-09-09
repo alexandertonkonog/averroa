@@ -29,7 +29,7 @@ const Wrapper = (props) => {
         const result = await sendData(props.resReducer, payload);
         if (result) {
             dispatch({type: 'SET_FINAL_STATE', payload: values});
-            reachGoal('widget_sms');
+            reachGoal('widget_appointment');
             history.push('/open/result/success');
         } else {
             history.push('/open/result/error');

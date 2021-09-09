@@ -331,7 +331,7 @@
 }
 #widget-1bit  .bit_header {
 	display: grid;
-	grid-template-columns: 3fr 2fr 1fr;
+	grid-template-columns: 3fr 1fr;
 	align-items: center;
 	position: static;
 	box-shadow: none;

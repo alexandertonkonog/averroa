@@ -20,14 +20,6 @@ const Header = ({ state, select }) => {
                 <h1 className="bit_title bit_title_main bit_header__title">
                     Запись на прием
                 </h1>
-                <Route path={["/open/services", "/open/specialists/services"]}>
-                    <Select 
-                        addClass="bit_header__select" 
-                        callback={chooseSex} 
-                        value={sex} 
-                        state={state} 
-                        title="Выберите пол" />
-                </Route> 
                 <Link className="bit_header__exit" to="/">
                     <img src={logo} alt="Закрыть окно" title="Закрыть окно" className="bit_header__exit-logo" />
                 </Link>
