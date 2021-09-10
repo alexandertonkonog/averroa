@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
+body, html {
+	scroll-behavior: smooth;
+}
 #widget-1bit  * {
 	font: 14px/1.21 'Helvetica Neue', arial, sans-serif;
 	padding: 0;
@@ -59,6 +62,9 @@
 	flex-direction: column;
 	margin-top: 0;
 	cursor: pointer;
+}
+#widget-1bit  .bit_input-container_checkbox .bit_input__header a {
+	text-decoration: underline;
 }
 #widget-1bit  .bit_input {
 	height: 40px;
@@ -313,6 +319,7 @@
 	transition: all ease 0.3s;
 	transform: translate(0px,-1px);
 	z-index: 100000;
+	scroll-behavior: smooth;
 }
 #widget-1bit  .bit_widget_open {
 	border-radius: 0;

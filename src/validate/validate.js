@@ -1,8 +1,14 @@
+import { liftToError } from '../utils/utils';
+
 export const isRequired = (str = 'Выполните обязательные действия') => (value) => {
-    if (!value) return str;
+    if (!value) {
+        return str;
+    };
 }
 export const isLength = (min = 3, max = 50, str = 'имя') => (value) => {
-    if (!value) return `Заполните поле ${str}`;
+    if (!value) {
+        return `Заполните поле ${str}`;
+    };
     if (value.length < min) {
         return `Длина поля ${str} должна быть не меньше ${min} символов`;
     }
@@ -13,4 +19,7 @@ export const isLength = (min = 3, max = 50, str = 'имя') => (value) => {
 export const isEqual = (str, error) => (value) => {
     if (!value) return 'Поле код обязательно';
     if (str !== value) return error;
+}
+export const isFormValidate = (values) => {
+    console.log(values);
 }

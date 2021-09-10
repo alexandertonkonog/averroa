@@ -1,7 +1,7 @@
 import { Form } from 'react-final-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoadButton from '../LoadButton/LoadButton';
-
+import { liftToError } from '../../utils/utils';
 
 const Wizard = (props) => {
 
@@ -35,7 +35,10 @@ const Wizard = (props) => {
         <Form
             initialValues={values}
             onSubmit={handleSubmit}>   
-            {({ handleSubmit }) => {
+            {({ handleSubmit, hasValidationErrors, errors}) => {
+                if (hasValidationErrors) {
+                    liftToError(errors);
+                }
                 return (
                     <form onSubmit={handleSubmit} className="bit_form">
                         {activePage}

@@ -310,15 +310,40 @@ export class DateFormatter {
 
 export const reachGoal = (goal) => {
     // const ym = ym || window.ym
-    // const yaCounter16687801 = yaCounter16687801 || window.yaCounter16687801;
-    // if (yaCounter16687801) {
-    //     try {
-    //         // ym(16687801, 'reachGoal', goal);
-    //         yaCounter16687801.reachGoal(goal);
-    //     } catch (e) {
-    //         console.error('Невозможно зафиксировать цель под идентификатором ' + goal + '. Ошибка соединения')
-    //     }
-    // } else {
-    //     console.warn('Невозможно зафиксировать цель под идентификатором ' + goal + '. Скрипт метрики не успел загрузиться');
-    // }
+    const yaCounter16687801 = yaCounter16687801 || window.yaCounter16687801;
+    if (yaCounter16687801) {
+        try {
+            // ym(16687801, 'reachGoal', goal);
+            yaCounter16687801.reachGoal(goal);
+        } catch (e) {
+            console.error('Невозможно зафиксировать цель под идентификатором ' + goal + '. Ошибка соединения')
+        }
+    } else {
+        console.warn('Невозможно зафиксировать цель под идентификатором ' + goal + '. Скрипт метрики не успел загрузиться');
+    }
+}
+
+export const liftToError = (errors) => {
+    let scrollElem = null;
+
+    const entries = Object.entries(errors);
+    const win = document.querySelector('.bit_widget');
+    const winScroll = win.scrollTop;
+    console.log(entries)
+    if (entries.length === 4 || (entries.length === 3 && !entries.find(item => item[0] === 'confirm'))) {
+        scrollElem = document.querySelector('.bit_widget .bit_form');
+    } else {
+        const firstErrorInput = entries.find(item => item[1]);
+        const inputContainers = document.querySelectorAll(`.bit_widget .bit_input-container`);
+        inputContainers.forEach(item => {
+            const input = item.querySelector(`.bit_input[name=${firstErrorInput[0]}]`);
+            if (input) {
+                scrollElem = item;
+            }
+        })
+    }
+    if (winScroll > scrollElem.offsetTop) {
+        // scrollElem.scrollIntoView();
+        win.scrollTo(0, scrollElem.offsetTop - 30)
+    }
 }

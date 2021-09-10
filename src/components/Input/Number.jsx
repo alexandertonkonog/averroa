@@ -1,19 +1,7 @@
 import { Field } from "react-final-form";
-import { useEffect, useRef } from "react";
 import { IMaskInput } from "react-imask";
 
 const NumberInput = (props) => {
-    
-    const inputRef = useRef();
-    const maskOptions = {
-        mask: '+{7}(000)000-00-00'
-    };
-    let mask = {unmaskedValue: ''};
-
-    useEffect(() => {
-        
-    }, [])
-
     return (
         <Field name={props.name} validate={props.validate}>
             {({input, meta}) => (
@@ -29,7 +17,8 @@ const NumberInput = (props) => {
                         mask={'+{7}(000)000-00-00'}
                         radix="."
                         value={input.value}
-                        unmask={true} 
+                        unmask={true}
+                        name={props.name}
                         className={meta.touched && meta.error 
                             ? "bit_input bit_input_error" 
                             : "bit_input"}

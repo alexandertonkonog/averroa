@@ -4,15 +4,16 @@ import Input from "../Input/Input";
 import NumberInput from "../Input/Number";
 import Checkbox from "../Input/Checkbox";
 import user from '../../images/user.svg';
-import { DateFormatter, reachGoal } from "../../utils/utils";
+import { DateFormatter, reachGoal, liftToError } from "../../utils/utils";
 import { Redirect } from "react-router-dom";
 import Back from "../Block/Back";
 
 const Personal = (props) => {
     const [state, dispatch] = props.commonState;
+
     const fields = [
-        {id: 1, name: 'name', label: 'Введите имя', validate: isLength(2, 30, 'имя'), placeholder: 'Ваше имя'},
-        {id: 2, name: 'surname', label: 'Введите фамилию', validate: isLength(3, 30, 'фамилия'), placeholder: 'Ваша фамилия'},
+        {id: 1, name: 'name', label: 'Введите имя', placeholder: 'Ваше имя'},
+        {id: 2, name: 'surname', label: 'Введите фамилию', placeholder: 'Ваша фамилия'},
     ]
     
     const { service, doctor, dateTime } = state;
@@ -36,7 +37,11 @@ const Personal = (props) => {
             <Back state={state} />
             <section className="bit_block bit_block_personal">
                 <div className="bit_personal bit_shadow">
-                    {fields.map(item => <Input key={item.id} {...item} req={true} />)}
+                    {fields.map(item => <Input 
+                        key={item.id} 
+                        {...item}
+                        validate={isLength(2, 30, 'имя')} 
+                        req={true} />)}
                     <NumberInput 
                         id={3}
                         req={true}
@@ -50,7 +55,9 @@ const Personal = (props) => {
                         name="confirm" 
                         label="Я соглашаюсь с политикой конфиденциальности" 
                         validate={isRequired('Необходимо согласие с политикой конфиденциальности')} />
-                    <p className="bit_text bit_personal__info">Обязательные поля помечены звездочкой <span className="bit_input__label_req">*</span></p>
+                    <p className="bit_text bit_personal__info">
+                        Обязательные поля помечены звездочкой <span className="bit_input__label_req">*</span>
+                    </p>
                 </div>
                 <div className="bit_specialist__more bit_shadow">
                     <div className="bit_personal__header">
