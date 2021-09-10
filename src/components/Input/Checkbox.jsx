@@ -6,7 +6,10 @@ const Checkbox = (props) => {
             {({input, meta}) => (
                 <div className={props.addClass ? "bit_input-container bit_input-container_checkbox " + props.addClass : "bit_input-container  bit_input-container_checkbox"}>
                     <p className="bit_input__header">
-                        {props.label && <label htmlFor={'input' + props.id} className="bit_input__label">{props.label}</label>}
+                        {props.label 
+                            &&  <label htmlFor={'input' + props.id} className="bit_input__label">
+                                    Я соглашаюсь с <a target="_blank" href="/privacy-policy/">Политикой конфиденциальности</a> {props.req && <span className="bit_input__label_req">*</span>}
+                                </label>}
                         {meta.touched && meta.error && <span className="bit_input__error">{meta.error}</span>}
                     </p>
                     <input

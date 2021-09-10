@@ -58,6 +58,7 @@
 	margin-left: 20px!important;
 	flex-direction: column;
 	margin-top: 0;
+	cursor: pointer;
 }
 #widget-1bit  .bit_input {
 	height: 40px;
@@ -87,6 +88,10 @@
 #widget-1bit  .bit_input__label {
 	flex-shrink: 0;
 	user-select: auto;
+}
+#widget-1bit .bit_input__label_req {
+	color: #ED3F3F;
+	font-size: 0.8rem;
 }
 #widget-1bit  .bit_input_error {
 	border: 1px solid #ED3F3F;
@@ -672,6 +677,10 @@
 #widget-1bit  .bit_specialist__services .bit_specialist__text {
 	padding-bottom: 10px;
 	border-bottom: 1px solid #BECCD2;
+}
+#widget-1bit  .bit_personal__info {
+	font-size: 0.9rem;
+	color: grey;
 }
 
 /* confirm */

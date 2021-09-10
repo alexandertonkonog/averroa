@@ -36,18 +36,21 @@ const Personal = (props) => {
             <Back state={state} />
             <section className="bit_block bit_block_personal">
                 <div className="bit_personal bit_shadow">
-                    {fields.map(item => <Input key={item.id} {...item} />)}
+                    {fields.map(item => <Input key={item.id} {...item} req={true} />)}
                     <NumberInput 
-                        id={3} 
+                        id={3}
+                        req={true}
                         name="number" 
                         label="Введите телефон" 
                         placeholder="Ваш телефон" 
                         validate={isLength(11, 12, 'телефон')} />
                     <Checkbox 
-                        id={4} 
+                        id={4}
+                        req={true} 
                         name="confirm" 
                         label="Я соглашаюсь с политикой конфиденциальности" 
                         validate={isRequired('Необходимо согласие с политикой конфиденциальности')} />
+                    <p className="bit_text bit_personal__info">Обязательные поля помечены звездочкой <span className="bit_input__label_req">*</span></p>
                 </div>
                 <div className="bit_specialist__more bit_shadow">
                     <div className="bit_personal__header">

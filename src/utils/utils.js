@@ -310,15 +310,15 @@ export class DateFormatter {
 
 export const reachGoal = (goal) => {
     // const ym = ym || window.ym
-    const yaCounter16687801 = yaCounter16687801 || window.yaCounter16687801;
-    if (yaCounter16687801) {
-        try {
-            // ym(16687801, 'reachGoal', goal);
-            yaCounter16687801.reachGoal(goal);
-        } catch (e) {
-            console.error('Невозможно зафиксировать цель под идентификатором ' + goal + '. Ошибка соединения')
-        }
-    } else {
-        console.warn('Невозможно зафиксировать цель под идентификатором ' + goal + '. Скрипт метрики не успел загрузиться');
-    }
+    // const yaCounter16687801 = yaCounter16687801 || window.yaCounter16687801;
+    // if (yaCounter16687801) {
+    //     try {
+    //         // ym(16687801, 'reachGoal', goal);
+    //         yaCounter16687801.reachGoal(goal);
+    //     } catch (e) {
+    //         console.error('Невозможно зафиксировать цель под идентификатором ' + goal + '. Ошибка соединения')
+    //     }
+    // } else {
+    //     console.warn('Невозможно зафиксировать цель под идентификатором ' + goal + '. Скрипт метрики не успел загрузиться');
+    // }
 }
