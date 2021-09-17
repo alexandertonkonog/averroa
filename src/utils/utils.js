@@ -33,6 +33,7 @@ export class ServiceFormatter {
                 }
             }
         })
+
         return resultElems.map(item => {
             const elem = {link: this.getFullLinkByName(item, location.pathname)};
             
@@ -113,6 +114,7 @@ export class ServiceFormatter {
             return this.getAllServices(filteredServices, rootServices[0].id);
         } else {
             this.root = id;
+            // services = services.map(item => ({...item, get children: () => {}}))
             return services;
         }
     }
@@ -126,21 +128,17 @@ export class ServiceFormatter {
             state.doctor.services.forEach(item => {
                 const service = state.services.find(elem => elem.id === item);
                 if (service) {
-                    const cond = this.serviceLevels[0].some(elem => elem.id === service.id);
-                    if (!cond) {
-                        this.serviceLevels[0].push(service);
-                    }
+                    this.serviceLevels[0].push(service);
                 }
             })
-        }
-        if (state.sex) {
-            changed = true;
-            this.serviceLevels[0] = this.serviceLevels[0].filter(item => item.sex === state.sex);
         }
         if (changed && this.serviceLevels[0].length) {
             this.getParents(state);
         }
-        return this.serviceLevels.flat();
+        console.log(this.serviceLevels);
+        let response = this.serviceLevels.flat();
+        response = Array.from(new Set(response));
+        return response;
     }
 
     getParents(state) {
@@ -152,22 +150,29 @@ export class ServiceFormatter {
             this.serviceLevels[current].forEach(item => {
                 const parent = state.services.find(elem => elem.id === item.parent);
                 if (parent) {
-                    const cond = !this.serviceLevels[next].some(elem => elem.id === parent.id);
-                    if (cond) {
-                        this.serviceLevels[next].push(parent);
-                    }
+                    this.serviceLevels[next].push(parent);
                 }
             })
             this.getParents(state);
         } 
     }
 
+    serviceSort(a, b) {
+        if (a.isDirectory && !b.isDirectory) return -1;
+        if (a.isDirectory && b.isDirectory) return 0;
+        if (!a.isDirectory && b.isDirectory) return 1;
+        const nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    }
+
     getStageServices(params, state) {
         let services = this.filterServices(state);
         if (params && params.id) {
-            services = services.filter(item => item.parent === params.id);
+            services = services.filter(item => item.parent === params.id).sort(this.serviceSort);
         } else {
-            services = services.filter(item => item.parent === this.root);
+            services = services.filter(item => item.parent === this.root).sort(this.serviceSort);
         }
         if (state.activeBlock) {
             services = services.sort((a, b) => a.id === state.activeBlock ? -1 : 0);
@@ -342,8 +347,7 @@ export const liftToError = (errors) => {
             }
         })
     }
-    if (winScroll > scrollElem.offsetTop) {
-        // scrollElem.scrollIntoView();
+    if (scrollElem && winScroll > scrollElem.offsetTop) {
         win.scrollTo(0, scrollElem.offsetTop - 30)
     }
 }

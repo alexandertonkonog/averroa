@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Redirect, useParams, useLocation } from 'react-router-dom';
 import { ServiceFormatter, reachGoal } from '../../utils/utils';
-import Search from '../Search/Search';
+
 import BlockGroup from './BlockGroup';
 import BlockService from './BlockService';
 import BlockBack from './BlockBack';
@@ -43,7 +43,7 @@ const Block = (props) => {
         <>
             <div className="bit_block__header">
                 <h2 className="bit_title bit_title_second">Выберите из группы услуг</h2>
-                <Search callback={props.searchCallback} commonState={props.commonState} />
+                
             </div>
             <section className="bit_block bit_block_service">
                 {data.length

@@ -12,8 +12,8 @@ const Personal = (props) => {
     const [state, dispatch] = props.commonState;
 
     const fields = [
-        {id: 1, name: 'name', label: 'Введите имя', placeholder: 'Ваше имя'},
-        {id: 2, name: 'surname', label: 'Введите фамилию', placeholder: 'Ваша фамилия'},
+        {id: 1, name: 'name', label: 'Введите имя', placeholder: 'Ваше имя', serviceName: 'имя'},
+        {id: 2, name: 'surname', label: 'Введите фамилию', placeholder: 'Ваша фамилия', serviceName: 'фамилия'},
     ]
     
     const { service, doctor, dateTime } = state;
@@ -40,7 +40,7 @@ const Personal = (props) => {
                     {fields.map(item => <Input 
                         key={item.id} 
                         {...item}
-                        validate={isLength(2, 30, 'имя')} 
+                        validate={isLength(2, 30, item.serviceName)} 
                         req={true} />)}
                     <NumberInput 
                         id={3}

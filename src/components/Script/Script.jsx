@@ -57,9 +57,7 @@ const Script = (props) => {
                     {data.map(item => (
                         <Link
                             to={'/open' + item.link}
-                            className={state.script === item.id 
-                                ? "bit_script__item bit_script__item_active"
-                                : "bit_script__item bit_shadow"} 
+                            className="bit_script__item bit_shadow"
                             key={item.id} 
                             onClick={() => {
                                 dispatch({type: 'CHANGE_SCRIPT', script: item.id});

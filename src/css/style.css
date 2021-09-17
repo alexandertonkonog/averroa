@@ -343,7 +343,7 @@ body, html {
 }
 #widget-1bit  .bit_header {
 	display: grid;
-	grid-template-columns: 3fr 1fr;
+	grid-template-columns: 3fr 2fr 1fr;
 	align-items: center;
 	position: static;
 	box-shadow: none;
@@ -440,13 +440,11 @@ body, html {
 #widget-1bit  .bit_script__logo {
 	width: 100px;
 	height: 200px;
+	fill: #CDA379;
 }
-#widget-1bit  .bit_script__item:hover, #widget-1bit  .bit_script__item_active {
+#widget-1bit  .bit_script__item:hover {
 	box-shadow: 0px 4px 8px 4px rgba(34, 60, 80, 0.3);
 	border: 1px solid #E7EAED;
-}
-#widget-1bit  .bit_script__item:hover .bit_script__logo, #widget-1bit  .bit_script__item_active .bit_script__logo {
-	fill: #CDA379;
 }
 #widget-1bit  .bit_error {
 	color: #ED3F3F;
@@ -480,7 +478,6 @@ body, html {
 
 #widget-1bit  .bit_search-container {
 	height: 40px;
-	width: 50%;
 	position: relative;
 }
 #widget-1bit  .bit_search__header {
@@ -759,9 +756,7 @@ body, html {
 	}
 
 	/* header */
-	#widget-1bit  .bit_header {
-		grid-template-columns: 6fr 1fr;
-	}
+
 	#widget-1bit  .bit_header__select {
 		grid-row: 2/3;
 		margin-top: 20px;
@@ -784,7 +779,6 @@ body, html {
 		align-items: flex-start;
 	}
 	#widget-1bit  .bit_search-container {
-		margin-top: 20px;
 		width: 100%;
 	}
 
@@ -839,7 +833,7 @@ body, html {
 		grid-row: 1/1;
 		grid-column: 6/7;
 	}
-	#widget-1bit  .bit_header__select {
+	#widget-1bit  .bit_search-container {
 		grid-row: 2/3;
 		grid-column: 1/7;
 		margin-top: 20px;
@@ -868,6 +862,10 @@ body, html {
 	/* script */
 	#widget-1bit  .bit_script__item {
 		border: 1px solid #BECCD2;
+	}
+	#widget-1bit  .bit_script__logo {
+		height: auto;
+		margin-bottom: 20px;
 	}
 
 	/* personal */
