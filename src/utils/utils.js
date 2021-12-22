@@ -331,7 +331,7 @@ export const liftToError = (errors) => {
     const entries = Object.entries(errors);
     const win = document.querySelector('.bit_widget');
     const winScroll = win.scrollTop;
-    console.log(entries)
+
     if (entries.length === 4 || (entries.length === 3 && !entries.find(item => item[0] === 'confirm'))) {
         scrollElem = document.querySelector('.bit_widget .bit_form');
     } else {
