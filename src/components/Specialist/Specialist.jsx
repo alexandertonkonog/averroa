@@ -61,9 +61,8 @@ const Specialist = (props) => {
                                 return <BlockBack state={state} key={item.id} item={item} />
                             }
                             return (
-                                <Link to={link}>
-                                    <li 
-                                        key={item.id} 
+                                <Link to={link} key={item.id}>
+                                    <li
                                         onClick={() => {
                                             dispatch({type: 'SET_DOCTOR', id: item});
                                         }}

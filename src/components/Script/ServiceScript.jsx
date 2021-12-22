@@ -17,19 +17,19 @@ const ServiceScript =  (props) => {
 
     return (
         <Switch>
-            <Route path="/open/services/:id/specialists/date/personal/confirm" >
+            <Route path="/open/services/:id?/specialists/date/personal/confirm" >
                 <Confirm commonState={props.commonState} />
             </Route>
-            <Route path="/open/services/:id/specialists/date/personal" >
+            <Route path="/open/services/:id?/specialists/date/personal" >
                 <Wizard onSubmit={props.onSubmit} commonState={props.commonState}>
                     <Personal commonState={props.commonState} />
                     <Confirm onSubmit={props.onSubmit} commonState={props.commonState} />
                 </Wizard>
             </Route>
-            <Route path="/open/services/:id/specialists/date" >
+            <Route path="/open/services/:id?/specialists/date" >
                 <DateTime commonState={props.commonState} />
             </Route>
-            <Route path="/open/services/:id/specialists" >
+            <Route path="/open/services/:id?/specialists" >
                 <Specialist commonState={props.commonState} />
             </Route>
             <Route path="/open/services/:id?" >

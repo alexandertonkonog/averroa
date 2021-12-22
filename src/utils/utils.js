@@ -107,14 +107,12 @@ export class ServiceFormatter {
     }
 
     getAllServices(services, id = '00000000-0000-0000-0000-000000000000') {
-        const root = services.find(item => item.parent === id);
-        const filteredServices = services.filter(item => item.id !== root.id);
-        const rootServices = services.filter(item => item.parent === root.id);
-        if (rootServices.length === 1) {
-            return this.getAllServices(filteredServices, rootServices[0].id);
+        const root = services.filter(item => item.parent === id).map(item => item.id);
+        if (root.length === 1) {
+            const filteredServices = services.filter(item => !root.includes(item.id));
+            return this.getAllServices(filteredServices, root[0]);
         } else {
             this.root = id;
-            // services = services.map(item => ({...item, get children: () => {}}))
             return services;
         }
     }
@@ -135,7 +133,6 @@ export class ServiceFormatter {
         if (changed && this.serviceLevels[0].length) {
             this.getParents(state);
         }
-        console.log(this.serviceLevels);
         let response = this.serviceLevels.flat();
         response = Array.from(new Set(response));
         return response;
@@ -315,17 +312,17 @@ export class DateFormatter {
 
 export const reachGoal = (goal) => {
     // const ym = ym || window.ym
-    const yaCounter16687801 = yaCounter16687801 || window.yaCounter16687801;
-    if (yaCounter16687801) {
-        try {
-            // ym(16687801, 'reachGoal', goal);
-            yaCounter16687801.reachGoal(goal);
-        } catch (e) {
-            console.error('Невозможно зафиксировать цель под идентификатором ' + goal + '. Ошибка соединения')
-        }
-    } else {
-        console.warn('Невозможно зафиксировать цель под идентификатором ' + goal + '. Скрипт метрики не успел загрузиться');
-    }
+    // const yaCounter16687801 = yaCounter16687801 || window.yaCounter16687801;
+    // if (yaCounter16687801) {
+    //     try {
+    //         // ym(16687801, 'reachGoal', goal);
+    //         yaCounter16687801.reachGoal(goal);
+    //     } catch (e) {
+    //         console.error('Невозможно зафиксировать цель под идентификатором ' + goal + '. Ошибка соединения')
+    //     }
+    // } else {
+    //     console.warn('Невозможно зафиксировать цель под идентификатором ' + goal + '. Скрипт метрики не успел загрузиться');
+    // }
 }
 
 export const liftToError = (errors) => {

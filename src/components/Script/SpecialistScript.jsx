@@ -17,16 +17,16 @@ const SpecialistScript =  (props) => {
 
     return (
         <Switch>
-            <Route path="/open/specialists/services/:id/date/personal/confirm" >
+            <Route path="/open/specialists/services/:id?/date/personal/confirm" >
                 <Confirm commonState={props.commonState} />
             </Route>
-            <Route path="/open/specialists/services/:id/date/personal" >
+            <Route path="/open/specialists/services/:id?/date/personal" >
                 <Wizard onSubmit={props.onSubmit} commonState={props.commonState}>
                     <Personal commonState={props.commonState} />
                     <Confirm onSubmit={props.onSubmit} commonState={props.commonState} />
                 </Wizard>
             </Route>
-            <Route path="/open/specialists/services/:id/date" >
+            <Route path="/open/specialists/services/:id?/date" >
                 <DateTime commonState={props.commonState} />
             </Route>
             <Route path="/open/specialists/services/:id?" >
